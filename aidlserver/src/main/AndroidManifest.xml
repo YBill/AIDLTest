@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bill.aidlserver">
+
+    <application>
+        <service
+            android:name=".BookManagerService"
+            android:exported="false"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.bill.aidlserver.BookService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
