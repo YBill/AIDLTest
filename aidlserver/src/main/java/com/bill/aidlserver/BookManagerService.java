@@ -1,9 +1,7 @@
 package com.bill.aidlserver;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.Process;
 import android.os.RemoteException;
@@ -31,7 +29,7 @@ public class BookManagerService extends Service {
 
     private final CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
 
-    private final IBookManager.Stub mBinder = new IBookManager.Stub() {
+    private final IBookManagerManual.Stub mBinder = new IBookManagerManual.Stub() {
         @Override
         public List<Book> getBookList() throws RemoteException {
             Log.e("YBill", "BookManagerService execute getBookList, size = " + mBookList.size());

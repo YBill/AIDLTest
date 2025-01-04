@@ -13,7 +13,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bill.aidlserver.IBookManager;
+import com.bill.aidlserver.IBookManagerManual;
 
 import java.util.List;
 
@@ -21,13 +21,13 @@ import com.bill.aidlserver.Book;
 
 public class MainActivity extends AppCompatActivity {
 
-    private IBookManager mIBookManager;
+    private IBookManagerManual mIBookManager;
 
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mIBookManager = IBookManager.Stub.asInterface(service);
+            mIBookManager = IBookManagerManual.Stub.asInterface(service);
         }
 
         @Override
