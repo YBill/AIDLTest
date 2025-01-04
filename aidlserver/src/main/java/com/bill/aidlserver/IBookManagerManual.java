@@ -6,24 +6,6 @@ import android.util.Log;
  * 拷贝的 自动生成的 IBookManager.java 类，自己写的号打印日志
  */
 public interface IBookManagerManual extends android.os.IInterface {
-    /**
-     * Default implementation for IBookManager.
-     */
-    public static class Default implements IBookManagerManual {
-        @Override
-        public java.util.List<Book> getBookList() throws android.os.RemoteException {
-            return null;
-        }
-
-        @Override
-        public void addBook(Book book) throws android.os.RemoteException {
-        }
-
-        @Override
-        public android.os.IBinder asBinder() {
-            return null;
-        }
-    }
 
     /**
      * Local-side IPC implementation stub class.
@@ -61,9 +43,6 @@ public interface IBookManagerManual extends android.os.IInterface {
         @Override
         public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
             String descriptor = DESCRIPTOR;
-            if (code >= android.os.IBinder.FIRST_CALL_TRANSACTION && code <= android.os.IBinder.LAST_CALL_TRANSACTION) {
-                data.enforceInterface(descriptor);
-            }
             switch (code) {
                 case INTERFACE_TRANSACTION: {
                     reply.writeString(descriptor);
@@ -73,15 +52,21 @@ public interface IBookManagerManual extends android.os.IInterface {
             switch (code) {
                 case TRANSACTION_getBookList: {
                     Log.e("YBill", "Stub getBookList");
+                    data.enforceInterface(descriptor);
                     java.util.List<Book> _result = this.getBookList();
                     reply.writeNoException();
-                    _Parcel.writeTypedList(reply, _result, android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+                    reply.writeTypedList(_result);
                     break;
                 }
                 case TRANSACTION_addBook: {
                     Log.e("YBill", "Stub addBook");
+                    data.enforceInterface(descriptor);
                     Book _arg0;
-                    _arg0 = _Parcel.readTypedObject(data, Book.CREATOR);
+                    if ((0 != data.readInt())) {
+                        _arg0 = Book.CREATOR.createFromParcel(data);
+                    } else {
+                        _arg0 = null;
+                    }
                     this.addBook(_arg0);
                     reply.writeNoException();
                     break;
@@ -134,7 +119,12 @@ public interface IBookManagerManual extends android.os.IInterface {
                 android.os.Parcel _reply = android.os.Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(DESCRIPTOR);
-                    _Parcel.writeTypedObject(_data, book, 0);
+                    if ((book != null)) {
+                        _data.writeInt(1);
+                        book.writeToParcel(_data, 0);
+                    } else {
+                        _data.writeInt(0);
+                    }
                     boolean _status = mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -148,49 +138,10 @@ public interface IBookManagerManual extends android.os.IInterface {
         static final int TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
     }
 
-    public static final String DESCRIPTOR = "com.bill.aidlserver.IBookManager";
+    public static final String DESCRIPTOR = "com.bill.aidlserver.IBookManagerManual";
 
     public java.util.List<Book> getBookList() throws android.os.RemoteException;
 
     public void addBook(Book book) throws android.os.RemoteException;
 
-    /**
-     * @hide
-     */
-    static class _Parcel {
-        static private <T> T readTypedObject(
-                android.os.Parcel parcel,
-                android.os.Parcelable.Creator<T> c) {
-            if (parcel.readInt() != 0) {
-                return c.createFromParcel(parcel);
-            } else {
-                return null;
-            }
-        }
-
-        static private <T extends android.os.Parcelable> void writeTypedObject(
-                android.os.Parcel parcel, T value, int parcelableFlags) {
-            if (value != null) {
-                parcel.writeInt(1);
-                value.writeToParcel(parcel, parcelableFlags);
-            } else {
-                parcel.writeInt(0);
-            }
-        }
-
-        static private <T extends android.os.Parcelable> void writeTypedList(
-                android.os.Parcel parcel, java.util.List<T> value, int parcelableFlags) {
-            if (value == null) {
-                parcel.writeInt(-1);
-            } else {
-                int N = value.size();
-                int i = 0;
-                parcel.writeInt(N);
-                while (i < N) {
-                    writeTypedObject(parcel, value.get(i), parcelableFlags);
-                    i++;
-                }
-            }
-        }
-    }
 }
