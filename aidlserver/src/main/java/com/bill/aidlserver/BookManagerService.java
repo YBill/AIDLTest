@@ -25,7 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BookManagerService extends Service {
 
     private final CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();
-    // 注意如果想要根据一个对象注销只能使用RemoteCallbackList
+    // 注意如果想要根据一个对象注销只能使用RemoteCallbackList；
+    // 或直接使用 IOnNewBookArrivedListener 对象，注销时直接置为null
     private final RemoteCallbackList<IOnNewBookArrivedListener> mListenerList = new RemoteCallbackList<>();
     private final AtomicBoolean mIsServerDestroy = new AtomicBoolean(false);
 
@@ -84,7 +85,7 @@ public class BookManagerService extends Service {
 
         @Override
         public void unregisterListener(IOnNewBookArrivedListener listener) throws RemoteException {
-            Log.e("YBill", "BookManagerService unregisterListener");
+            Log.e("YBill", "BookManagerService unregisterListener listener = " + listener);
             mListenerList.unregister(listener);
         }
     };

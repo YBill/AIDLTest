@@ -29,17 +29,33 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mIBookManager = IBookManagerManual.Stub.asInterface(service);
+            try {
+                service.linkToDeath(mDeathRecipient, 0);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            // 服务挂了会走这里，可以处理重连
+            // 注意这里是运行在主进程的主线程中，即在UI线程中
+        }
+    };
 
+    // Binder 的死亡监听
+    private final IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            // Binder 死亡会回调这里，可以处理重连
+            // 注意这里是运行在主进程的Binder线程池中 （这是和onServiceDisconnected的唯一区别）
         }
     };
 
     private final IOnNewBookArrivedListener mOnNewBookArrivedListener = new IOnNewBookArrivedListener.Stub() {
         @Override
         public void onNewBookArrived(Book newBook) throws RemoteException {
+            // 注意这个回调是在主进程中，但是不在主线程，而是在一个新的线程中（Binder线程池）
             Log.e("YBill", "onNewBookArrived book = " + newBook);
         }
     };
@@ -92,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleUnregister(View view) {
-        Log.e("YBill", "handleUnregister");
+        Log.e("YBill", "handleUnregister listener = " + mOnNewBookArrivedListener);
         try {
             mIBookManager.unregisterListener(mOnNewBookArrivedListener);
         } catch (RemoteException e) {
