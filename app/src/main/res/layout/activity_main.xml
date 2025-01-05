@@ -19,5 +19,16 @@
         android:onClick="handleAdd"
         android:text="Add Book" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="handleRegister"
+        android:text="Register" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="handleUnregister"
+        android:text="Unregister" />
 
 </LinearLayout>

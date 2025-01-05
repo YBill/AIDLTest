@@ -18,6 +18,7 @@ import com.bill.aidlserver.IBookManagerManual;
 import java.util.List;
 
 import com.bill.aidlserver.Book;
+import com.bill.aidlserver.IOnNewBookArrivedListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
 
+        }
+    };
+
+    private final IOnNewBookArrivedListener mOnNewBookArrivedListener = new IOnNewBookArrivedListener.Stub() {
+        @Override
+        public void onNewBookArrived(Book newBook) throws RemoteException {
+            Log.e("YBill", "onNewBookArrived book = " + newBook);
         }
     };
 
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleGet(View view) {
+        Log.e("YBill", "handleGet");
         try {
             List<Book> list = mIBookManager.getBookList();
             Log.e("YBill", "query book list, list type:" + list.getClass().getCanonicalName());
@@ -64,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleAdd(View view) {
+        Log.e("YBill", "handleAdd");
         Book book = new Book(100, "Python");
         try {
             mIBookManager.addBook(book);
@@ -72,4 +82,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void handleRegister(View view) {
+        Log.e("YBill", "handleRegister listener = " + mOnNewBookArrivedListener);
+        try {
+            mIBookManager.registerListener(mOnNewBookArrivedListener);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void handleUnregister(View view) {
+        Log.e("YBill", "handleUnregister");
+        try {
+            mIBookManager.unregisterListener(mOnNewBookArrivedListener);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

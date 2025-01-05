@@ -1,5 +1,6 @@
 package com.bill.aidlserver;
 
+import android.os.RemoteException;
 import android.util.Log;
 
 /**
@@ -71,6 +72,23 @@ public interface IBookManagerManual extends android.os.IInterface {
                     reply.writeNoException();
                     break;
                 }
+                case TRANSACTION_registerListener: {
+                    Log.e("YBill", "Stub registerListener");
+                    data.enforceInterface(descriptor);
+                    IOnNewBookArrivedListener _arg0;
+                    _arg0 = IOnNewBookArrivedListener.Stub.asInterface(data.readStrongBinder());
+                    this.registerListener(_arg0);
+                    reply.writeNoException();
+                    break;
+                }
+                case TRANSACTION_unregisterListener: {
+                    data.enforceInterface(descriptor);
+                    IOnNewBookArrivedListener _arg0;
+                    _arg0 = IOnNewBookArrivedListener.Stub.asInterface(data.readStrongBinder());
+                    this.unregisterListener(_arg0);
+                    reply.writeNoException();
+                    break;
+                }
                 default: {
                     return super.onTransact(code, data, reply, flags);
                 }
@@ -132,10 +150,43 @@ public interface IBookManagerManual extends android.os.IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override
+            public void registerListener(IOnNewBookArrivedListener listener) throws RemoteException {
+                Log.e("YBill", "Proxy registerListener mRemote = " + mRemote);
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    boolean _status = mRemote.transact(Stub.TRANSACTION_registerListener, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override
+            public void unregisterListener(IOnNewBookArrivedListener listener) throws RemoteException {
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    boolean _status = mRemote.transact(Stub.TRANSACTION_unregisterListener, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         static final int TRANSACTION_getBookList = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
         static final int TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+        static final int TRANSACTION_registerListener = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
+        static final int TRANSACTION_unregisterListener = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
     }
 
     public static final String DESCRIPTOR = "com.bill.aidlserver.IBookManagerManual";
@@ -143,5 +194,9 @@ public interface IBookManagerManual extends android.os.IInterface {
     public java.util.List<Book> getBookList() throws android.os.RemoteException;
 
     public void addBook(Book book) throws android.os.RemoteException;
+
+    public void registerListener(IOnNewBookArrivedListener listener) throws android.os.RemoteException;
+
+    public void unregisterListener(IOnNewBookArrivedListener listener) throws android.os.RemoteException;
 
 }
